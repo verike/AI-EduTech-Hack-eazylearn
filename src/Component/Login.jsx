@@ -1,17 +1,28 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export const Login = () => {
   const [email, setEmail] = useState('');
   //const [password, setPassword] = useState('');
- 
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
   const handleLogin = async () => {
-    try {
-      // Make a POST request to your login API endpoint
-      const response = await axios.post('https://ai-edutech-hack-server.onrender.com/api/v1/user/sign-in', {
-        email,
-        //password, // You might want to include the password here
-      });
+     try {
+      const response = await axios.post('https://ai-edutech-hack-server.onrender.com/api/v1/user/sign-in', 
+      { email },
+      {
+        headers:{
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type":"application/json"
+        },
+      },
+    ); // POST request to backend login endpoint
+      console.log('Login successful:', response.data);
+      // Redirect user to dashboard or homepage upon successful login
+      navigate('/home');
 
       // Assuming the API returns a token upon successful login
       const token = response.data.token;
@@ -21,13 +32,16 @@ export const Login = () => {
       localStorage.setItem('token', token);
       localStorage.setItem('userId', userId);
 
-      // Redirect the user to the homepage
-      history.push('/'); // Assuming your homepage route is '/'
     } catch (error) {
-      console.error('Login failed:', error); // Handle login error
+      console.error('Login failed:', error.response.data);
+      // Display error message to the user
+      // You can update state to show error message or use any other method to inform the user about the login failure
+    } finally {
+      setLoading(false); // Reset loading state
     }
+    console.log('Signing in...');
   };
-
+  
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-full max-w-xs">
