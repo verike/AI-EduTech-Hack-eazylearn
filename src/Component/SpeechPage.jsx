@@ -1,13 +1,13 @@
 import { useState } from "react";
 import axios from 'axios';
 import { useAuthContext } from "../Context/authContext";
-import { useToast } from 'react-toast-notifications';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 export const SpeechPage = () => {
   const { token } = useAuthContext();
-  const toast = useToast();
   const [response, setResponse] = useState(null);
   const { transcript, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
 
@@ -57,6 +57,7 @@ export const SpeechPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-200 to-pink-400 flex flex-col justify-center items-center">
+      <ToastContainer />
       <h1 className="text-4xl font-bold mb-8">What do you want to learn today</h1>
       <p>Microphone: {listening ? 'on' : 'off'}</p>
       <button className="rounded-full px-4 py-2 bg-blue-500 text-white mb-4 w-[200px]" onClick={SpeechRecognition.startListening}>Click button to speak</button>
