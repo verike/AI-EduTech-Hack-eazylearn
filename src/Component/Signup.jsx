@@ -9,8 +9,13 @@ export const Signup = () => {
     
     try {
       const response = await axios.post('https://ai-edutech-hack-server.onrender.com/api/v1/user/sign-up', {
-        email,
-      });
+        email},
+        {
+          headers:{
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type":"application/json"
+          }
+          });
       console.log(response.data); // Handle successful signup response
     } catch (error) {
       console.error('Signup failed:', error); // Handle signup error
