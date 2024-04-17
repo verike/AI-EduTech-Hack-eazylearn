@@ -1,6 +1,10 @@
 import { useState } from "react";
 import 'regenerator-runtime/runtime';
-  
+import axios from 'axios';
+import { useAuthContext } from "../Context/authContext";
+
+
+
 
 //     <div>
 //       <div >
@@ -16,6 +20,51 @@ import 'regenerator-runtime/runtime';
 //    </div>
 
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+
+const handleSend = async () => {
+  const { userId, token } = useAuthContext();
+  const [response, setResponse] = useState(null);
+
+  try {
+    const response = await axios.post(`https://ai-edutech-hack-server.onrender.com/api/v1/ai/${userId}/prompt`,
+      { question },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.status === 200) {
+      setIsLoading(false);
+      toast.success("Question was successfully submitted", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    setResponse(response.data.chat.response);
+  } catch (error) {
+    setIsLoading(false);
+    toast.error("An error occurred. Please try again.", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    setResponse(null);
+  }
+}
 
 export const SpeechPage = () => {
   const {
@@ -38,7 +87,7 @@ export const SpeechPage = () => {
       <button className="rounded-full px-4 py-2 bg-blue-500 text-white mb-4 w-[200px]" onClick={resetTranscript}>Reset</button>
       {/* <textarea className="border border-gray-300 rounded-lg px-4 py-2 w-80 h-40 mb-4" placeholder="Speech converted to text..." readOnly>{transcript}</textarea> */}
       <p>{transcript}</p>
-      <button className="rounded-full px-4 py-2 bg-green-500 text-white">Send</button>
+      <button className="rounded-full px-4 py-2 bg-green-500 text-white" onClick={handleSend}>Send</button>
     </div>
   );
 };

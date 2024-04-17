@@ -26,9 +26,11 @@ export const Login = () => {
 
       // Assuming the API returns a token upon successful login
       const token = response.data.token;
+      const userId = response.data.userId;
 
       // Save the token to localStorage or session storage
       localStorage.setItem('token', token);
+      localStorage.setItem('userId', userId);
 
     } catch (error) {
       console.error('Login failed:', error.response.data);
